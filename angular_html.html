@@ -1,0 +1,139 @@
+<body>
+ <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<style>
+	h2{
+		width: 100px;
+	}
+	</style>
+    <div ng-app="app" ng-controller="myCtrl" background-color="green">
+        <p>First Name: <input type="text" name="firstName" ng-model="firstName" required /></p>
+        <p>Lirst Name: <input type="text" name="lastName" ng-model="lastName" required /></p>
+        <button ng-click="SendData()">Submit</button>
+		<button ng-click="RetrieveData()">Get</button>
+		<h1 ng-repeat="user in users">{{user.roomname}} - {{user.status}}</h1>
+		<h2 ng-style="myObj"><button>challenger</button></h2>
+        <hr />
+        {{ PostDataResponse }}
+    </div>
+    <script>
+        var app = angular.module("app",[]);
+        app.controller("myCtrl", function($scope,$http,$timeout){
+        $scope.SendData = function() {
+		
+            var data = {
+                   fName : $scope.firstName,
+				  lName : $scope.lastName
+                }
+            $http.post('/postFormAngular', data)
+                .success(function (data, status, headers, config) {
+                    $scope.PostDataResponse = data;
+                })
+                .error(function(data, status, header, config){
+                    $scope.PostDataResponse = "Data: " + status;
+
+
+                });
+        };  
+		
+		/*$scope.RetrieveData = function() {
+		
+				//$scope.users=[];
+			$http.get('/getFormAngular').success( function(response) {
+			
+				$scope.users=response;
+				//alert(response);
+      // var m = JSON.parse(response);
+	  var m=response.map(JSON.stringify);
+	   alert(m);
+       for (var i=0;i<m.length;i++) {
+			 var mj=JSON.parse(m[i]);
+			 alert(mj.name);
+			if(mj.name=="hello"&&mj.status==1)
+			{
+				$scope.myObj = {
+        "color" : "blue",
+        "background-color" : "coral",
+        "font-size" : "60px",
+        "padding" : "50px"
+    }
+			}				
+			else{
+				$scope.myObj = {
+        "color" : "green",
+        "background-color" : "red",
+        "font-size" : "60px",
+        "padding" : "50px"
+			}
+			}
+			
+			}
+		 
+	//}
+    //alert(JSON.stringify(data));    
+	//alert(users.id);			
+   });
+        };  */
+		$scope.reload = function () {
+		 //alert("reload");
+    $http.get('/getFormAngular').success( function(response) {
+			
+				$scope.users=response;
+				//alert(response);
+      // var m = JSON.parse(response);
+	  var m=response.map(JSON.stringify);
+	   //alert(m);
+       for (var i=0;i<m.length;i++) {
+			 var mj=JSON.parse(m[i]);
+			 //alert(mj.roomname);
+			if(mj.status==0)
+			{
+				$scope.myObj = {
+        "color" : "blue",
+        "background-color" : "coral",
+        "font-size" : "60px",
+        "padding" : "50px"
+    }
+			}				
+			else if(mj.status==1){
+				$scope.myObj = {
+        "color" : "green",
+        "background-color" : "red",
+        "font-size" : "60px",
+        "padding" : "50px"
+			}
+			}
+			else if(mj.status==2)
+			{
+				$scope.myObj = {
+        "color" : "cyan",
+        "background-color" : "pink",
+        "font-size" : "60px",
+        "padding" : "50px"
+			}
+			}
+			else
+			{
+				$scope.myObj = {
+        "color" : "cyan",
+        "background-color" : "pink",
+        "font-size" : "60px",
+        "padding" : "50px"
+			}
+			}
+			}
+		 
+	//}
+    //alert(JSON.stringify(data));    
+	//alert(users.id);			
+   });
+
+    $timeout(function(){
+      $scope.reload();
+    },5000)
+  };
+  $scope.reload();
+				
+        });
+    </script>
+ </body>
